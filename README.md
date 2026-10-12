@@ -1,2 +1,189 @@
 # NOVA-STORE
 Trendy Finds, Everyday Essentials. 트렌디한 아이템부터 일상에 필요한 필수템까지, 당신의 일상을 더 특별하게 만들어보세요.
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOVA — Find Your Next Favorite</title>
+<style>
+:root{--bg:#fff;--fg:#111;--muted:#777;--line:#e9e9e9;--soft:#f5f5f3}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Arial,"Apple SD Gothic Neo",sans-serif}
+button,a{font:inherit}
+button{cursor:pointer}
+header{height:68px;padding:0 6%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:5}
+.logo{font-size:27px;font-weight:900;letter-spacing:5px;text-decoration:none;color:#111}
+.header-right{display:flex;gap:18px;align-items:center}
+.header-link{border:0;background:none;font-size:12px;letter-spacing:1px}
+.cart-btn{border:1px solid #111;padding:10px 13px;background:#111;color:#fff;font-size:12px}
+.hero{background:var(--soft);padding:76px 7% 65px}
+.eyebrow{font-size:10px;letter-spacing:4px}
+.hero h1{font-size:clamp(45px,9vw,86px);letter-spacing:-4px;line-height:.98;margin:25px 0}
+.hero p{font-size:14px;color:#555;line-height:1.9}
+.primary{display:inline-block;background:#111;color:#fff;text-decoration:none;border:0;padding:15px 22px;font-size:11px;letter-spacing:1px;margin-top:16px}
+main{padding:48px 6% 65px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:24px}
+h2{font-size:26px;letter-spacing:-1px;margin:0}
+.small{font-size:10px;letter-spacing:1px;color:var(--muted)}
+.filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:25px}
+.filter{white-space:nowrap;border:1px solid #ddd;background:white;padding:10px 15px;font-size:12px}
+.filter.active{background:#111;color:#fff;border-color:#111}
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 13px}
+.product{min-width:0}
+.product-visual{aspect-ratio:4/4.6;background:var(--soft);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.product-emoji{font-size:clamp(45px,9vw,78px)}
+.product-tag{position:absolute;top:10px;left:10px;background:#fff;padding:6px 8px;font-size:9px;letter-spacing:1px}
+.product-info{padding-top:12px}
+.product-category{font-size:10px;color:var(--muted)}
+.product-name{font-size:14px;font-weight:600;margin:7px 0}
+.product-price{font-size:13px;font-weight:bold}
+.add-btn{width:100%;margin-top:12px;background:white;border:1px solid #111;padding:11px;font-size:11px}
+.add-btn:active{background:#eee}
+.empty{grid-column:1/-1;color:#777;padding:30px 0}
+.promo{margin-top:55px;padding:30px 22px;background:#111;color:#fff}
+.promo h2{font-size:24px}
+.promo p{font-size:12px;line-height:1.8;color:#ccc}
+.cart-section{display:none;border:1px solid var(--line);padding:22px;margin:0 6% 45px}
+.cart-section.open{display:block}
+.cart-row{display:flex;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px}
+.remove{border:0;background:none;text-decoration:underline;color:#777;font-size:11px}
+.cart-total{display:flex;justify-content:space-between;font-weight:bold;padding:20px 0}
+.checkout{width:100%;padding:15px;background:#111;color:white;border:0;font-size:12px}
+.cart-note{font-size:11px;color:#777;line-height:1.7}
+footer{background:#111;color:#fff;padding:30px 6%;font-size:11px;line-height:2}
+footer a{color:#fff}
+@media(min-width:700px){.products{grid-template-columns:repeat(4,minmax(0,1fr));gap:35px 18px}.hero{padding:115px 9%}.hero p{font-size:15px}main{padding:65px 8%}.cart-section{margin-left:8%;margin-right:8%}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#">NOVA</a>
+  <div class="header-right">
+    <a class="header-link" href="#shop" style="text-decoration:none;color:#111">SHOP</a>
+    <button class="cart-btn" onclick="toggleCart()">BAG (<span id="cart-count">0</span>)</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">YOUR NEXT FAVORITE THING</div>
+  <h1>Good Finds.<br>Good Vibes.</h1>
+  <p>발견하는 재미, 소장하는 즐거움.<br>요즘 눈에 띄는 아이템을 NOVA에서 만나봐.</p>
+  <a class="primary" href="#shop">EXPLORE THE DROP ↗</a>
+</section>
+
+<main id="shop">
+  <div class="section-head">
+    <h2>Latest Finds.</h2>
+    <span class="small">THE NOVA EDIT</span>
+  </div>
+
+  <div class="filters">
+    <button class="filter active" data-category="all" onclick="filterProducts('all',this)">ALL ITEMS</button>
+    <button class="filter" data-category="tech" onclick="filterProducts('tech',this)">TECH</button>
+    <button class="filter" data-category="life" onclick="filterProducts('life',this)">LIFESTYLE</button>
+    <button class="filter" data-category="fashion" onclick="filterProducts('fashion',this)">FASHION</button>
+  </div>
+
+  <div class="products" id="products"></div>
+
+  <section class="promo">
+    <div class="eyebrow">LESS ORDINARY</div>
+    <h2>Find something new.</h2>
+    <p>매일 쓰는 물건도 조금 더 특별하게.<br>NOVA와 새로운 취향을 발견해 봐.</p>
+  </section>
+</main>
+
+<section class="cart-section" id="cart-section">
+  <div class="section-head">
+    <h2>Your Bag.</h2>
+    <button class="remove" onclick="toggleCart()">닫기 ✕</button>
+  </div>
+  <div id="cart-items"></div>
+  <div class="cart-total"><span>TOTAL</span><span id="cart-total">₩0</span></div>
+  <p class="cart-note">현재는 쇼핑몰 기능 테스트용입니다. 결제 및 주문 접수는 아직 연결되어 있지 않습니다.</p>
+  <button class="checkout" onclick="alert('NOVA 결제 기능은 준비 중입니다!')">CHECKOUT — COMING SOON</button>
+</section>
+
+<footer>
+  <div class="logo" style="color:white">NOVA</div>
+  <div>Find Your Next Favorite.</div>
+  <div style="color:#aaa;margin-top:12px">© NOVA. All rights reserved.</div>
+</footer>
+
+<script>
+const products = [
+  {id:1,name:"Everyday Headphones",category:"tech",label:"TRENDING",emoji:"🎧",price:29900},
+  {id:2,name:"Mini Desk Light",category:"life",label:"NEW",emoji:"💡",price:18900},
+  {id:3,name:"Daily Cross Bag",category:"fashion",label:"POPULAR",emoji:"👜",price:25900},
+  {id:4,name:"Smart Watch Stand",category:"tech",label:"JUST IN",emoji:"⌚",price:14900},
+  {id:5,name:"Cozy Room Mood",category:"life",label:"PICK",emoji:"🕯️",price:12900},
+  {id:6,name:"Everyday Cap",category:"fashion",label:"TRENDING",emoji:"🧢",price:19900},
+  {id:7,name:"Portable Speaker",category:"tech",label:"NEW",emoji:"🔊",price:34900},
+  {id:8,name:"Phone Essentials",category:"life",label:"NOVA PICK",emoji:"📱",price:9900}
+];
+let cart = [];
+let currentCategory = "all";
+
+const won = n => "₩" + n.toLocaleString("ko-KR");
+
+function renderProducts(){
+  const list = products.filter(p => currentCategory === "all" || p.category === currentCategory);
+  document.getElementById("products").innerHTML = list.map(p => `
+    <article class="product">
+      <div class="product-visual">
+        <span class="product-tag">${p.label}</span>
+        <span class="product-emoji">${p.emoji}</span>
+      </div>
+      <div class="product-info">
+        <div class="product-category">${p.category.toUpperCase()}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">${won(p.price)}</div>
+        <button class="add-btn" onclick="addToCart(${p.id})">＋ ADD TO BAG</button>
+      </div>
+    </article>`).join("");
+}
+
+function filterProducts(category,button){
+  currentCategory = category;
+  document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
+  button.classList.add("active");
+  renderProducts();
+}
+
+function addToCart(id){
+  const found = cart.find(item => item.id === id);
+  if(found) found.qty++;
+  else cart.push({...products.find(p => p.id === id),qty:1});
+  renderCart();
+}
+
+function removeFromCart(id){
+  cart = cart.filter(item => item.id !== id);
+  renderCart();
+}
+
+function renderCart(){
+  const count = cart.reduce((sum,item) => sum + item.qty,0);
+  const total = cart.reduce((sum,item) => sum + item.price * item.qty,0);
+  document.getElementById("cart-count").textContent = count;
+  document.getElementById("cart-total").textContent = won(total);
+  document.getElementById("cart-items").innerHTML = cart.length
+    ? cart.map(item => `<div class="cart-row"><span>${item.name} × ${item.qty}<br>${won(item.price * item.qty)}</span><button class="remove" onclick="removeFromCart(${item.id})">삭제</button></div>`).join("")
+    : '<p class="cart-note">장바구니가 비어 있어요.</p>';
+}
+
+function toggleCart(){
+  document.getElementById("cart-section").classList.toggle("open");
+  if(document.getElementById("cart-section").classList.contains("open")){
+    document.getElementById("cart-section").scrollIntoView({behavior:"smooth"});
+  }
+}
+
+renderProducts();
+renderCart();
+</script>
+</body>
+</html>
