@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOVA — Find Your Next Favorite</title>
+<style>
+:root{--bg:#fff;--fg:#111;--muted:#777;--line:#e9e9e9;--soft:#f5f5f3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Arial,"Apple SD Gothic Neo",sans-serif}
+button,input{font:inherit}button{cursor:pointer}
+header{height:68px;padding:0 6%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:5}
+.logo{font-size:27px;font-weight:900;letter-spacing:5px;text-decoration:none;color:#111}
+.cart-btn,.primary,.checkout{background:#111;color:#fff;border:0;padding:13px 17px;font-size:12px}
+.hero{background:var(--soft);padding:70px 7%}
+.eyebrow{font-size:10px;letter-spacing:4px}
+.hero h1{font-size:clamp(45px,9vw,86px);letter-spacing:-4px;line-height:.98;margin:25px 0}
+.hero p{font-size:14px;color:#555;line-height:1.9}
+main{padding:45px 6% 65px}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:24px}
+h2{font-size:26px;letter-spacing:-1px;margin:0}
+.small{font-size:10px;letter-spacing:1px;color:var(--muted)}
+.filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:25px}
+.filter{white-space:nowrap;border:1px solid #ddd;background:#fff;padding:10px 15px;font-size:12px}
+.filter.active{background:#111;color:#fff;border-color:#111}
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 13px}
+.product-visual{aspect-ratio:4/4.6;background:var(--soft);display:flex;align-items:center;justify-content:center;position:relative}
+.product-emoji{font-size:clamp(45px,9vw,78px)}
+.product-tag{position:absolute;top:10px;left:10px;background:#fff;padding:6px 8px;font-size:9px}
+.product-info{padding-top:12px}.product-category{font-size:10px;color:var(--muted)}
+.product-name{font-size:14px;font-weight:600;margin:7px 0}
+.product-price{font-size:13px;font-weight:bold}
+.add-btn{width:100%;margin-top:12px;background:white;border:1px solid #111;padding:11px;font-size:11px}
+.promo{margin-top:55px;padding:30px 22px;background:#111;color:#fff}
+.promo p{font-size:12px;line-height:1.8;color:#ccc}
+.cart-section,.checkout-section{display:none;border:1px solid var(--line);padding:22px;margin:0 6% 40px}
+.cart-section.open,.checkout-section.open{display:block}
+.cart-row{display:flex;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px}
+.remove{border:0;background:none;text-decoration:underline;color:#777;font-size:11px}
+.cart-total{display:flex;justify-content:space-between;font-weight:bold;padding:20px 0}
+.checkout{width:100%}.note{font-size:12px;color:#666;line-height:1.8}
+.checkout-section input{width:100%;padding:13px;border:1px solid #ddd;margin:8px 0 16px}
+.bank-box{background:var(--soft);padding:18px;margin:18px 0;line-height:2;font-size:14px;overflow-wrap:anywhere}
+.secondary{width:100%;padding:13px;background:white;border:1px solid #111;margin-top:10px}
+footer{background:#111;color:#fff;padding:30px 6%;font-size:11px;line-height:2}
+@media(min-width:700px){.products{grid-template-columns:repeat(4,minmax(0,1fr));gap:35px 18px}.hero{padding:100px 9%}main{padding:65px 8%}.cart-section,.checkout-section{margin-left:8%;margin-right:8%}}
+</style>
+</head>
+<body>
+<header>
+<a class="logo" href="#">NOVA</a>
+<button class="cart-btn" onclick="toggleCart()">BAG (<span id="cart-count">0</span>)</button>
+</header>
+
+<section class="hero">
+<div class="eyebrow">YOUR NEXT FAVORITE THING</div>
+<h1>Find Your<br>Next Favorite.</h1>
+<p>Discover everyday essentials, trending finds and things you'll love.</p>
+<a class="primary" href="#shop">EXPLORE COLLECTION</a>
+</section>
+
+<main id="shop">
+<div class="section-head"><h2>Latest Finds</h2><span class="small">CURATED BY NOVA</span></div>
+<div class="filters">
+<button class="filter active" onclick="filterProducts('all',this)">ALL</button>
+<button class="filter" onclick="filterProducts('tech',this)">TECH</button>
+<button class="filter" onclick="filterProducts('fashion',this)">FASHION</button>
+<button class="filter" onclick="filterProducts('life',this)">LIFESTYLE</button>
+</div>
+<div class="products" id="products"></div>
+<div class="promo"><h2>Good finds. Everyday.</h2><p>Discover something new with NOVA.</p></div>
+</main>
+
+<section class="cart-section" id="cart-section">
+<h2>Your Bag</h2>
+<div id="cart-items"></div>
+<div class="cart-total"><span>Total</span><span id="cart-total">₩0</span></div>
+<button class="checkout" onclick="openCheckout()">PROCEED TO BANK TRANSFER</button>
+<p class="note">입금 확인 전에는 주문이 결제 완료된 것이 아닙니다.</p>
+</section>
+
+<section class="checkout-section" id="checkout-section">
+<h2>Bank Transfer</h2>
+<p class="note">주문 상품과 총금액을 확인하고 아래 계좌로 입금해 주세요.</p>
+<div id="order-summary" class="bank-box"></div>
+<div class="bank-box">
+<strong>은행명</strong><br>계좌 정보 준비 중<br>
+<strong>계좌번호</strong><br>판매자 계좌번호를 설정해 주세요.<br>
+<strong>예금주</strong><br>예금주 정보 준비 중
+</div>
+<button class="secondary" onclick="copyBank()">계좌번호 복사</button>
+<label for="buyer-name">입금자명</label>
+<input id="buyer-name" placeholder="실제 입금할 이름" maxlength="40">
+<label for="buyer-contact">연락처 또는 이메일 (선택)</label>
+<input id="buyer-contact" placeholder="주문 확인용 연락처" maxlength="100">
+<button class="checkout" onclick="submitOrder()">입금 완료 신청</button>
+<button class="secondary" onclick="backToCart()">장바구니로 돌아가기</button>
+<p class="note">현재는 시범 화면입니다. 주문 정보가 서버에 저장되거나 입금 여부가 자동 확인되지 않습니다. 실제 판매 전 계좌 정보와 주문 관리 기능을 설정해야 합니다.</p>
+</section>
+
+<footer>
+<strong>NOVA</strong><br>Find Your Next Favorite.<br>© NOVA. All rights reserved.
+</footer>
+
+<script>
+const products = [
+{id:1,name:"Everyday Headphones",category:"tech",label:"TRENDING",emoji:"🎧",price:29900},
+{id:2,name:"Mini Desk Light",category:"life",label:"NEW",emoji:"💡",price:18900},
+{id:3,name:"Daily Cross Bag",category:"fashion",label:"POPULAR",emoji:"👜",price:25900},
+{id:4,name:"Smart Watch Stand",category:"tech",label:"JUST IN",emoji:"⌚",price:14900},
+{id:5,name:"Cozy Room Mood",category:"life",label:"PICK",emoji:"🕯️",price:12900},
+{id:6,name:"Everyday Cap",category:"fashion",label:"TRENDING",emoji:"🧢",price:19900},
+{id:7,name:"Portable Speaker",category:"tech",label:"NEW",emoji:"🔊",price:34900},
+{id:8,name:"Phone Essentials",category:"life",label:"NOVA PICK",emoji:"📱",price:9900}
+];
+let cart=[];
+let currentCategory="all";
+const won=n=>"₩"+n.toLocaleString("ko-KR");
+
+// 실제 판매를 시작하기 전 본인의 공식 판매용 계좌 정보를 설정하세요.
+const bankName="은행 정보 준비 중";
+const accountNumber="";
+const accountHolder="예금주 정보 준비 중";
+
+function renderProducts(){
+const list=products.filter(p=>currentCategory==="all"||p.category===currentCategory);
+document.getElementById("products").innerHTML=list.map(p=>`
+<article class="product">
+<div class="product-visual"><span class="product-tag">${p.label}</span><span class="product-emoji">${p.emoji}</span></div>
+<div class="product-info"><div class="product-category">${p.category.toUpperCase()}</div>
+<div class="product-name">${p.name}</div><div class="product-price">${won(p.price)}</div>
+<button class="add-btn" onclick="addToCart(${p.id})">＋ ADD TO BAG</button></div></article>`).join("");
+}
+function filterProducts(category,button){
+currentCategory=category;
+document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
+button.classList.add("active");renderProducts();
+}
+function addToCart(id){
+const found=cart.find(item=>item.id===id);
+if(found)found.qty++;else cart.push({...products.find(p=>p.id===id),qty:1});
+renderCart();
+}
+function removeFromCart(id){cart=cart.filter(item=>item.id!==id);renderCart();}
+function renderCart(){
+const count=cart.reduce((s,i)=>s+i.qty,0);
+const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+document.getElementById("cart-count").textContent=count;
+document.getElementById("cart-total").textContent=won(total);
+document.getElementById("cart-items").innerHTML=cart.length?cart.map(i=>`
+<div class="cart-row"><span>${i.name} × ${i.qty}</span><span>${won(i.price*i.qty)} <button class="remove" onclick="removeFromCart(${i.id})">삭제</button></span></div>`).join(""):"<p>장바구니가 비어 있어요.</p>";
+}
+function toggleCart(){
+document.getElementById("cart-section").classList.toggle("open");
+if(document.getElementById("cart-section").classList.contains("open"))document.getElementById("cart-section").scrollIntoView({behavior:"smooth"});
+}
+function openCheckout(){
+if(!cart.length){alert("장바구니에 상품을 먼저 담아 주세요.");return;}
+document.getElementById("order-summary").innerHTML=
+cart.map(i=>`${i.name} × ${i.qty} — ${won(i.price*i.qty)}`).join("<br>")+
+`<hr><strong>총금액: ${won(cart.reduce((s,i)=>s+i.price*i.qty,0))}</strong>`;
+document.getElementById("checkout-section").classList.add("open");
+document.getElementById("checkout-section").scrollIntoView({behavior:"smooth"});
+}
+function copyBank(){
+if(!accountNumber){alert("판매자 계좌번호가 아직 설정되지 않았어요.");return;}
+if(navigator.clipboard&&navigator.clipboard.writeText){
+navigator.clipboard.writeText(accountNumber).then(()=>alert("계좌번호를 복사했어요.")).catch(()=>prompt("계좌번호를 복사하세요",accountNumber));
+}else{prompt("계좌번호를 복사하세요",accountNumber);}
+}
+function backToCart(){
+document.getElementById("checkout-section").classList.remove("open");
+document.getElementById("cart-section").scrollIntoView({behavior:"smooth"});
+}
+function submitOrder(){
+if(!cart.length){alert("장바구니가 비어 있어요.");return;}
+const name=document.getElementById("buyer-name").value.trim();
+if(!name){alert("입금자명을 입력해 주세요.");return;}
+alert("입금 완료 신청 화면 확인!\n\n현재는 시범 기능이라 주문이 서버에 저장되지 않습니다. 실제 입금 여부도 자동 확인되지 않으니 아직 판매 주문으로 사용하지 마세요.");
+}
+renderProducts();renderCart();
+</script>
+</body>
+</html>
