@@ -85,9 +85,9 @@ footer{background:#111;color:#fff;padding:30px 6%;font-size:11px;line-height:2}
 <p class="note">주문 상품과 총금액을 확인하고 아래 계좌로 입금해 주세요.</p>
 <div id="order-summary" class="bank-box"></div>
 <div class="bank-box">
-<strong>은행명</strong><br>계좌 정보 준비 중<br>
-<strong>계좌번호</strong><br>판매자 계좌번호를 설정해 주세요.<br>
-<strong>예금주</strong><br>예금주 정보 준비 중
+<strong>은행명</strong><br>토스뱅크<br>
+<strong>계좌번호</strong><br>1002-2947-9032.<br>
+<strong>예금주</strong><br>오예준
 </div>
 <button class="secondary" onclick="copyBank()">계좌번호 복사</button>
 <label for="buyer-name">입금자명</label>
