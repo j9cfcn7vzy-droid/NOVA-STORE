@@ -119,9 +119,9 @@ let currentCategory="all";
 const won=n=>"₩"+n.toLocaleString("ko-KR");
 
 // 실제 판매를 시작하기 전 본인의 공식 판매용 계좌 정보를 설정하세요.
-const bankName="은행 정보 준비 중";
-const accountNumber="";
-const accountHolder="예금주 정보 준비 중";
+const bankName="토스뱅크";
+const accountNumber="1002-2947-9032";
+const accountHolder="오예준";
 
 function renderProducts(){
 const list=products.filter(p=>currentCategory==="all"||p.category===currentCategory);
